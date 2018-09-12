@@ -33,7 +33,7 @@ module JenkinsPipelineBuilder
       item = item_bag[:value]
       bag = {}
       return unless item.is_a?(Hash)
-      item.keys.each do |k|
+      item.each_key do |k|
         val = item[k]
         next unless val.is_a? String
         new_value = resolve_value(val, settings_bag)
@@ -47,7 +47,7 @@ module JenkinsPipelineBuilder
     def compile_job(item, settings = {})
       new_item = compile(item, settings)
       [true, new_item]
-    rescue => e
+    rescue StandardError => e
       return [false, [e.message]]
     end
 
@@ -70,9 +70,7 @@ module JenkinsPipelineBuilder
       if enable_block_present? item
         enabled_switch = resolve_value(item[:enabled], settings)
         return {} if enabled_switch == 'false'
-        if enabled_switch != 'true'
-          raise "Invalid value for #{item[:enabled]}: #{enabled_switch}"
-        end
+        raise "Invalid value for #{item[:enabled]}: #{enabled_switch}" if enabled_switch != 'true'
         if item[:parameters].is_a? Hash
           item = item.merge item[:parameters]
           item.delete :parameters
@@ -92,7 +90,7 @@ module JenkinsPipelineBuilder
 
     def compile_string(item, settings)
       resolve_value(item, settings)
-    rescue => e
+    rescue StandardError => e
       raise "Failed to resolve #{item} because: #{e.message}"
     end
 
@@ -162,7 +160,7 @@ module JenkinsPipelineBuilder
 
     def correct_job_names!(value)
       vars = value.scan(/{{job@(.*)}}/).flatten
-      return unless vars.count > 0
+      return unless vars.count.positive?
       vars.select! do |var|
         var_val = job_collection[var.to_s]
         value.gsub!("{{job@#{var}}}", var_val[:value][:name]) unless var_val.nil?

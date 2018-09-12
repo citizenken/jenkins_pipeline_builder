@@ -65,7 +65,6 @@ module JenkinsPipelineBuilder
     def credentials=(creds)
       @credentials = creds
       @client = JenkinsApi::Client.new(credentials)
-      @credentials
     end
 
     def logger

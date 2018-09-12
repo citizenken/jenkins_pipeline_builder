@@ -68,15 +68,15 @@ module JenkinsPipelineBuilder
     private
 
     def init_process_path(job_name, process_name)
-      "/job/#{URI.encode job_name}/promotion/createProcess?name=#{URI.encode process_name}"
+      "/job/#{CGI.encode job_name}/promotion/createProcess?name=#{CGI.encode process_name}"
     end
 
     def set_process_path(job_name, process_name)
-      "/job/#{URI.encode job_name}/promotion/process/#{URI.encode process_name}/config.xml"
+      "/job/#{CGI.encode job_name}/promotion/process/#{CGI.encode process_name}/config.xml"
     end
 
     def get_process_path(job_name, process_name)
-      "/job/#{URI.encode job_name}/promotion/process/#{URI.encode process_name}"
+      "/job/#{CGI.encode job_name}/promotion/process/#{CGI.encode process_name}"
     end
   end
 end

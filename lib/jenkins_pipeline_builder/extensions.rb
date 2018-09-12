@@ -37,7 +37,7 @@ module JenkinsPipelineBuilder
       parameters: []
     }.freeze
 
-    EXT_METHODS.keys.each do |method_name|
+    EXT_METHODS.each_key do |method_name|
       define_method method_name do |value = nil|
         return instance_variable_get("@#{method_name}") if value.nil?
         instance_variable_set("@#{method_name}", value)
@@ -59,10 +59,12 @@ module JenkinsPipelineBuilder
     def execute(value, n_xml)
       errors = check_parameters value
       raise ArgumentError, errors.join("\n") if errors.any?
-      raise ArgumentError, %(Extension #{name} has no valid path
-      Check ModuleRegistry#entries and the definition of the extension
-      Note: job_attributes have no implicit path and must be set in the builder
-      ).squeeze(' ') unless path
+      unless path
+        raise ArgumentError, %(Extension #{name} has no valid path
+        Check ModuleRegistry#entries and the definition of the extension
+        Note: job_attributes have no implicit path and must be set in the builder
+        ).squeeze(' ')
+      end
 
       n_builders = n_xml.xpath(path).first
       n_builders.instance_exec(value, &before) if before
@@ -72,11 +74,11 @@ module JenkinsPipelineBuilder
     end
 
     def check_parameters(value)
-      return [] if parameters && parameters.empty?
+      return [] if parameters == false || parameters&.empty?
       return [] unless value.is_a? Hash
       errors = []
       value.each_key do |key|
-        next if parameters && parameters.include?(key)
+        next if parameters&.include?(key)
         errors << "Extension #{name} does not support parameter #{key}"
       end
       errors
@@ -84,7 +86,7 @@ module JenkinsPipelineBuilder
 
     def errors
       errors = {}
-      EXT_METHODS.keys.each do |name|
+      EXT_METHODS.each_key do |name|
         errors[name] = 'Must be set' if send(name).nil?
       end
       errors

@@ -36,3 +36,6 @@ Style/SymbolProc:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false

@@ -76,7 +76,7 @@ module JenkinsPipelineBuilder
 
     def get_by_path_collection(path, registry)
       item = registry[path.shift.to_sym]
-      return item if path.count == 0
+      return item if path.count.zero?
       get_by_path_collection(path, item)
     end
 

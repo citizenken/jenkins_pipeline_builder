@@ -1,3 +1,4 @@
+# rubocop:disable Layout/EmptyLinesAroundArguments
 #
 # Copyright (c) 2014 Constant Contact
 #
@@ -18,6 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+# rubocop:enable Layout/EmptyLinesAroundArguments
 
 trigger do
   name :git_push
